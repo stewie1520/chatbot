@@ -1,11 +1,6 @@
 from fastapi import FastAPI
-from dotenv import load_dotenv
+from .apis.v1.router import router as api_v1_router
 
-load_dotenv()
 
 app = FastAPI()
-
-
-@app.get('/')
-def hello_world():
-    return 'Hello world'
+app.include_router(api_v1_router, prefix='/api/v1')
