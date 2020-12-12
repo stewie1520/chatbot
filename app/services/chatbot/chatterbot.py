@@ -1,5 +1,6 @@
 from chatterbot import ChatBot
 from chatterbot.trainers import ListTrainer
+from typing import List
 from dotenv import load_dotenv
 import os
 import logging
@@ -19,21 +20,22 @@ def make_bot():
         storage_adapter='chatterbot.storage.MongoDatabaseAdapter',
         database_uri=os.getenv('DB_CONNECTION_STRING'),
         logic_adapters=[
+            'chatterbot.logic.BestMatch',
             'chatterbot.logic.MathematicalEvaluation',
             'chatterbot.logic.TimeLogicAdapter',
-            'chatterbot.logic.BestMatch',
         ],
     )
 
     return bot
 
 
-def train_bot(dto: TeachDto):
+def train_bot(statements: List[TeachDto]):
     trainer = ListTrainer(make_bot())
-    trainer.train([
-        dto.message,
-        dto.response
-    ])
+    for statement in statements:
+        trainer.train([
+            statement.message,
+            statement.response
+        ])
 
     return trainer
 

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Body, Query
+from typing import List
 from app.models.DTOs import TeachDto, Response, AnswerDto
 from app.services.chatbot.chatterbot import train_bot, get_response
 
@@ -13,7 +14,7 @@ async def get_answer(message: str = Query(...)):
 
 
 @router.post('/teach', response_model=Response)
-async def teach(dto: TeachDto = Body(...,embed=False)):
-    train_bot(dto)
-    res = Response(success=True, data=dto)
+async def teach(statements: List[TeachDto] = Body(...,embed=True)):
+    train_bot(statements)
+    res = Response(success=True)
     return res
